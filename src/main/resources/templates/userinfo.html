@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"> <!-- Thymeleaf 네임스페이스를 선언 -->
+<head>
+  <title>유저정보</title>
+</head>
+<body>
+<h1>유저정보</h1>
+<p th:text="${user.nickname} + ' 구단주님'"></p>
+<p th:text="'레벨 : ' + ${user.level}"></p>
+
+</body>
+</html>
