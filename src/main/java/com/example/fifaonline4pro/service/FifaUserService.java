@@ -26,14 +26,27 @@ public class FifaUserService {
     private final RestTemplate restTemplate; // RestTemplate 스프링 빈 주입
     private final ApiKey apiKey; // API key 스프링 빈 주입
 
-    //  API의 엔드포인트(endpoint) URL을 저장하기 위한 상수
-    private static final String API_URL = "https://api.nexon.co.kr/fifaonline4/v1.0/users?nickname=";
-
     // 유저 정보 조회 메소드 findByUserinfo
     // nickname으로 넥슨 open API에서 유저 정보를 가져온 후, FifaUser 객체로 변환 후 반환
     public FifaUser findByUserinfo(String nickname) {
         // 넥슨에 요청할 url (open API URL + 작성한 유저이름)
-        String url = API_URL + nickname;
+        String url = "https://api.nexon.co.kr/fifaonline4/v1.0/users?nickname=" + nickname;
+
+        HttpHeaders headers = new HttpHeaders(); // HTTP 요청의 헤더 정보를 담아서 보낼 수 있는 객체 생성
+        headers.set("Authorization", apiKey.getKey()); // Authorization 정보를 담아서 API에 인증을 하기위해 api key값을 헤더 객체에 저장
+        HttpEntity<String> entity = new HttpEntity<>("Userinfo", headers); // HTTP 요청의 본문(헤더도 함께 가능) 정보를 담아서 보낼 수 있는 객체 생성
+
+        // HTTP 요청을 보내고 응답을 받아오는 RestTemplate 객체의 exchange() 메소드를 호출
+        // GET 방식으로 요청을 보내고, 응답으로 받은 JSON 데이터를 FifaUser 클래스로 매핑하여 반환
+        // (url, 메소드, HTTP 요청 본문 데이터, HTTP 응답 본문 타입)
+        ResponseEntity<FifaUser> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, FifaUser.class);
+
+        return responseEntity.getBody(); // 최종적으로 반환된 FifaUser 객체의 Body 값을 반환
+    }
+
+    public FifaUser findByUserinfo2(String accessId) {
+        // 넥슨에 요청할 url (open API URL + 작성한 유저이름)
+        String url = "https://api.nexon.co.kr/fifaonline4/v1.0/users/" + accessId;
 
         HttpHeaders headers = new HttpHeaders(); // HTTP 요청의 헤더 정보를 담아서 보낼 수 있는 객체 생성
         headers.set("Authorization", apiKey.getKey()); // Authorization 정보를 담아서 API에 인증을 하기위해 api key값을 헤더 객체에 저장
