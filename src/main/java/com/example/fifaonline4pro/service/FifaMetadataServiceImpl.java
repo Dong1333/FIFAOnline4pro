@@ -1,7 +1,5 @@
 package com.example.fifaonline4pro.service;
 
-import com.example.fifaonline4pro.config.ApiKey;
-
 import com.example.fifaonline4pro.dto.DivisionDTO;
 import com.example.fifaonline4pro.dto.MatchTypeDTO;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +25,6 @@ import java.util.List;
 @RequiredArgsConstructor // final 선언 필드 생성자 생성
 @Slf4j
 public class FifaMetadataServiceImpl implements FifaMetadataService{
-
     RestTemplate restTemplate = new RestTemplate();
 
     // 피파의 모든 경기 종류 리스트를 가져와 DTO 리스트로 반환
