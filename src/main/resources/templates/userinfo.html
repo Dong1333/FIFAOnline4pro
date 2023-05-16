@@ -10,6 +10,13 @@
 
 <p th:text="'accessId : ' + ${accessIdUser.accessId}"></p>
 
+<tbody>
+<div th:each="match : ${userMatchHistory}">
+  <p th:text="${match.getMatchType()} + ' 최고 티어 :' + ${match.getDivision()}"></p>
+  <!-- 나머지 필드들도 출력 가능 -->
+</div>
+</tbody>
+
 
 </body>
 </html>
