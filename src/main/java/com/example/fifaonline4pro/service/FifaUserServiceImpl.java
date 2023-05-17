@@ -34,10 +34,11 @@ public class FifaUserServiceImpl implements FifaUserService{
 
 
     private final ApiKey apiKey; // API key 스프링 빈 주입
+    private final RestTemplate restTemplate; //  HTTP 통신을 간편하게 처리하기 위한 객체 생성
     private final FifaMetadataMatcherService fifaMetadataMatcherService;
     private final FifaMetadataService  fifaMetadataService;
-    HttpHeaders headers = new HttpHeaders(); // HTTP 요청의 헤더 정보를 담아서 보낼 수 있는 객체 생성
-    RestTemplate restTemplate;
+    HttpHeaders headers = new HttpHeaders(); // (재사용)HTTP 요청의 헤더 정보를 담아서 보낼 수 있는 객체 생성
+
     // 유저 정보 조회 메소드 findUserByNickname
     // nickname으로 넥슨 open API에서 유저 정보를 가져온 후, FifaUser 객체로 변환 후 반환
     public FifaUser findUserByNickname(String nickname) {
@@ -50,7 +51,7 @@ public class FifaUserServiceImpl implements FifaUserService{
         // HTTP 요청을 보내고 응답을 받아오는 RestTemplate 객체의 exchange() 메소드를 호출
         // GET 방식으로 요청을 보내고, 응답으로 받은 JSON 데이터를 FifaUser 클래스로 매핑하여 반환
         // (url, 메소드, HTTP 요청 본문 데이터, HTTP 응답 본문 타입)
-        ResponseEntity<FifaUser> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, FifaUser.class);
+         ResponseEntity<FifaUser> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, FifaUser.class);
 
         return responseEntity.getBody(); // 최종적으로 반환된 FifaUser 객체의 Body 값을 반환
     }
