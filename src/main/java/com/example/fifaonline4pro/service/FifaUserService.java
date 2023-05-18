@@ -18,4 +18,6 @@ public interface FifaUserService {
 
     List<UserTearHistoryDTO> getUserTearHistoryList(String accessId); // 유저 경기별 역대 최고 등급 조회
 
+    // 유저 매치 기록 조회
+    List<String> getUserMatchHistory(String accessId, int matchType, int offset, int limit);
 }

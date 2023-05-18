@@ -11,14 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 
+import java.net.URI;
 import java.util.*;
 
 
@@ -125,4 +123,32 @@ public class FifaUserServiceImpl implements FifaUserService{
         }
         return userTearHistoryDTOList;
     }
+
+    // 유저 매치 기록 조회
+    public List<String> getUserMatchHistory(String accessId, int matchType, int offset, int limit) {
+        String url = "https://api.nexon.co.kr/fifaonline4/v1.0/users/" + accessId +"/matches?matchtype=" + matchType +"&offset="+ offset + "&limit=" + limit;
+
+        // HTTP 요청을 위한 헤더 설정
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.set("Authorization", apiKey.getKey());
+
+        // 요청 URI 객체 생성 (요청 url + 값 지정하기)
+        URI uri = URI.create(url.replace("{accessid}", accessId)
+                .replace("{matchtype}", String.valueOf(matchType))
+                .replace("{offset}", String.valueOf(offset))
+                .replace("{limit}", String.valueOf(limit)));
+
+        log.info("------uri 정보-------");
+        log.info(String.valueOf(uri));
+
+        // HTTP (GET)요청 객체 생성
+        RequestEntity<Void> requestEntity = new RequestEntity<>(headers, HttpMethod.GET, uri);
+
+        // API 호출 및 결과 수신
+        String[] response = restTemplate.exchange(requestEntity, String[].class).getBody();
+
+        // 결과 반환
+        return Arrays.asList(response);
+    }
+
 }
