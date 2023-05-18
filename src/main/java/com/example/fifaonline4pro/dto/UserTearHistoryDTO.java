@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserMatchHistoryDTO {
+public class UserTearHistoryDTO {
         private String matchType; // 경기 종류
         private String division; // 최고 티어
         private String achievementDate; // 달성 날짜

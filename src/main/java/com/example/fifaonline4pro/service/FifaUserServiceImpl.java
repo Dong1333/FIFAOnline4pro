@@ -4,7 +4,8 @@ import com.example.fifaonline4pro.config.ApiKey;
 import com.example.fifaonline4pro.domain.FifaUser;
 import com.example.fifaonline4pro.dto.DivisionDTO;
 import com.example.fifaonline4pro.dto.MatchTypeDTO;
-import com.example.fifaonline4pro.dto.UserMatchHistoryDTO;
+
+import com.example.fifaonline4pro.dto.UserTearHistoryDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
@@ -76,11 +77,11 @@ public class FifaUserServiceImpl implements FifaUserService{
     }
 
     // 유저 경기별 역대 최고 등급 조회
-    public List<UserMatchHistoryDTO> getUserTearHistoryList(String accessId) {
+    public List<UserTearHistoryDTO> getUserTearHistoryList(String accessId) {
         String url = "https://api.nexon.co.kr/fifaonline4/v1.0/users/" + accessId + "/maxdivision";
         headers.set("Authorization", apiKey.getKey()); // Authorization 정보를 담아서 API에 인증을 하기위해 api key값을 헤더 객체에 저장
         HttpEntity<String> entity = new HttpEntity<>("UserMacthHistory", headers); // HTTP 요청의 본문(헤더도 함께 가능) 정보를 담아서 보낼 수 있는 객체 생성
-        List<UserMatchHistoryDTO> userMatchHistoryDTOList = new ArrayList<>();
+        List<UserTearHistoryDTO> userTearHistoryDTOList = new ArrayList<>();
 
         // HTTP 요청을 보내고 응답을 받아오는 RestTemplate 객체의 exchange() 메소드를 호출
         // 유저 경기별 역대 최고 등급 조회 결과 > [{"matchType":50,"division":800,"achievementDate":"2023-05-12T01:03:34"},{"matchType":52,"division":1100,"achievementDate":"2021-03-01T18:42:03"}]
@@ -108,7 +109,7 @@ public class FifaUserServiceImpl implements FifaUserService{
                 String achievementDate = jsonObject.getString("achievementDate");
 
                 // 유저의 매치 기록을 담아 전달할 DTO 객체 생성
-                UserMatchHistoryDTO userMatchHistoryDTO = new UserMatchHistoryDTO();
+                UserTearHistoryDTO userMatchHistoryDTO = new UserTearHistoryDTO();
 
                 // 유저의 기록(경기 종류, 최고 티어, 달성 날짜) 저장
                 // 유저의 경기 기록들을 하나씩 피파의 메타데이터와 매칭 경기 : 공식, 감독 / 티어 : 챌린저 1, 프로 1
@@ -117,11 +118,11 @@ public class FifaUserServiceImpl implements FifaUserService{
                 userMatchHistoryDTO.setAchievementDate(achievementDate);  // 기록 달성 날짜 저장
 
                 // DTO를 경기 기록 리스트에 하나씩(공식, 감독) 저장
-                userMatchHistoryDTOList.add(userMatchHistoryDTO);
+                userTearHistoryDTOList.add(userMatchHistoryDTO);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return userMatchHistoryDTOList;
+        return userTearHistoryDTOList;
     }
 }

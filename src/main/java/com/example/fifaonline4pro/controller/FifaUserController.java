@@ -1,7 +1,8 @@
 package com.example.fifaonline4pro.controller;
 
 import com.example.fifaonline4pro.domain.FifaUser;
-import com.example.fifaonline4pro.dto.UserMatchHistoryDTO;
+
+import com.example.fifaonline4pro.dto.UserTearHistoryDTO;
 import com.example.fifaonline4pro.service.FifaUserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -38,12 +39,12 @@ public class FifaUserController {
             return new ModelAndView("error"); // error.html View를 반환
         }
 
-        // 유저의 경기별 티어 정보 가져오기. > 배열 : 공식, 감독...
-        List<UserMatchHistoryDTO> userMatchHistoryDTOList = fifaUserServiceImpl.getUserTearHistoryList(accessId);
+        // 유저의 경기별 티어 정보 가져오기. > 배열 데이터(공식, 감독)
+        List<UserTearHistoryDTO> userTearHistoryDTOList = fifaUserServiceImpl.getUserTearHistoryList(accessId);
 
         model.addAttribute("nickNameUser", nickNameUser); // Model 객체에 (닉네임으로 가져온) 유저 정보를 추가
         model.addAttribute("accessIdUser", accessIdUser); // Model 객체에 (고유 식별자로 가져온) 유저 정보를 추가
-        model.addAttribute("userMatchHistory", userMatchHistoryDTOList); // Model 객체에 유저 티어 기록 배열 데이터 추가
+        model.addAttribute("userMatchHistory", userTearHistoryDTOList); // Model 객체에 유저 티어 기록 배열 데이터 추가
         return new ModelAndView("userinfo"); // userinfo.html View를 반환
     }
 
