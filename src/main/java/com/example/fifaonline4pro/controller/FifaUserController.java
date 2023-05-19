@@ -60,6 +60,19 @@ public class FifaUserController {
         return accessIdUser; // '유저 고유 식별자'로 가져온 FifaUser 객체 반환
     }
 
+    // '유저 고유 식별자'로 요청하는 메소드
+    @GetMapping("/userinfo={accessssId}")
+    public FifaUser getUserByAccessIdd(@PathVariable("accessId") String accessId, ) {
+        // FifaUserRepository의 findUserByAccessId 메소드를 호출하여 FifaUser 객체를 가져온다.
+        FifaUser accessIdUser = fifaUserServiceImpl.getUserMatchHistory(accessId);
+
+
+        if (accessIdUser == null) { // '유저 고유 식별자'로 가져온 FifaUser 객체가 null일 경우(존재하지 않을 경우)
+            return null; // null 반환
+        }
+        return accessIdUser; // '유저 고유 식별자'로 가져온 FifaUser 객체 반환
+    }
+
 
 
     //   Ajax 방식 '닉네임'으로 '유저 정보' 조회 후 JSON 형태 반환
