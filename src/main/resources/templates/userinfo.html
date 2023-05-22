@@ -5,13 +5,13 @@
 </head>
 <body>
 <h1>유저정보</h1>
-<p th:text="${nickNameUser.nickname} + ' 구단주님'"></p>
-<p th:text="'레벨 : ' + ${nickNameUser.level}"></p>
+<p th:text="${userInfoByAccessId.nickname} + ' 구단주님'"></p>
+<p th:text="'레벨 : ' + ${userInfoByAccessId.level}"></p>
 
-<p th:text="'accessId : ' + ${accessIdUser.accessId}"></p>
+<p th:text="'accessId : ' + ${userInfoByAccessId.accessId}"></p>
 
 <tbody>
-<div th:each="match : ${userMatchHistory}">
+<div th:each="match : ${userTearHistoryDTOList}">
   <p th:text="${match.getMatchType()} + ' 최고 티어 :' + ${match.getDivision()}"></p>
   <!-- 나머지 필드들도 출력 가능 -->
 </div>
