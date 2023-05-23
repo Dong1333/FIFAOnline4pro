@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.*;
 
@@ -36,7 +38,23 @@ public class FifaUserServiceImpl implements FifaUserService{
     private final RestTemplate restTemplate; //  HTTP 통신을 간편하게 처리하기 위한 객체 생성
     private final FifaMetadataMatcherService fifaMetadataMatcherService;
     private final FifaMetadataService  fifaMetadataService;
+    private final HttpServletRequest request; // accessId가 저장되는 requset 멤버 변수(재할당 불가)
+
     HttpHeaders headers = new HttpHeaders(); // (재사용)HTTP 요청의 헤더 정보를 담아서 보낼 수 있는 객체 생성
+
+    // 컨트롤러에서 유저 accessId 값 받아 세션으로 저장
+    public void setAccessIdToSession(HttpServletRequest request, String accessId) {
+        HttpSession session = request.getSession();
+        session.setAttribute("accessId", accessId);
+    }
+
+    // accessId 가져오기
+    public String getAccessIdToSession() {
+        HttpSession session = request.getSession();
+        String accessId = (String) session.getAttribute("accessId");
+        return accessId;
+    }
+
 
     // 유저 정보 조회 메소드 findUserByNickname
     // nickname으로 넥슨 open API에서 유저 정보를 가져온 후, FifaUser 객체로 변환 후 반환
@@ -57,9 +75,11 @@ public class FifaUserServiceImpl implements FifaUserService{
 
     // 유저 정보 조회 메소드 findUserByAccessId
     // accessId으로 넥슨 open API에서 유저 정보를 가져온 후, FifaUser 객체로 변환 후 반환
-    public FifaUser findUserByAccessId(String accessId) {
+    public FifaUser findUserByAccessId() {
+        String accessId = getAccessIdToSession(); // 유저 accessId 가져오기
         // 넥슨에 요청할 url (open API URL + 작성한 유저 이름을 통해 얻어온 accessId)
         String url = "https://api.nexon.co.kr/fifaonline4/v1.0/users/" + accessId;
+
         log.info("-------accessId---------");
         log.info(accessId);
 
@@ -75,7 +95,12 @@ public class FifaUserServiceImpl implements FifaUserService{
     }
 
     // 유저 경기별 역대 최고 등급 조회
-    public List<UserTearHistoryDTO> getUserTearHistoryList(String accessId) {
+    public List<UserTearHistoryDTO> getUserTearHistoryList() {
+        String accessId = getAccessIdToSession(); // 유저 accessId 가져오기
+
+        log.info("-------accessId---------");
+        log.info(accessId); // 로그 찍기
+
         String url = "https://api.nexon.co.kr/fifaonline4/v1.0/users/" + accessId + "/maxdivision";
         headers.set("Authorization", apiKey.getKey()); // Authorization 정보를 담아서 API에 인증을 하기위해 api key값을 헤더 객체에 저장
         HttpEntity<String> entity = new HttpEntity<>("UserMacthHistory", headers); // HTTP 요청의 본문(헤더도 함께 가능) 정보를 담아서 보낼 수 있는 객체 생성
@@ -92,7 +117,6 @@ public class FifaUserServiceImpl implements FifaUserService{
             // 피파의 메타 데이터 가져오기(경기 종류, 티어 종류)
             List<MatchTypeDTO> fifaMatchTypeDTOList = fifaMetadataService.getMatchTypeDTOList();
             List<DivisionDTO> fifaDivisionDTOList = fifaMetadataService.getDivisionDTOList();
-
 
             // 유저 티어 기록 제이슨 '배열' 데이터를 하나씩 JSONObject 객체로 변환
             // > {"division":800,"matchType":50,"achievementDate":"2023-05-12T01:03:34"}
@@ -118,14 +142,15 @@ public class FifaUserServiceImpl implements FifaUserService{
                 // DTO를 경기 기록 리스트에 하나씩(공식, 감독) 저장
                 userTearHistoryDTOList.add(userMatchHistoryDTO);
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (JSONException e) { // JSON 데이터 관련 처리를 하는 도중 에러가 나오면
+            e.printStackTrace(); // 예외가 발생한 위치와 예외 스택 트레이스(디버깅하는 데 매우 유용)을 출력
         }
         return userTearHistoryDTOList;
     }
 
     // 유저 매치 기록 조회
-    public List<String> getUserMatchHistory(String accessId, int matchType, int offset, int limit) {
+    public List<String> getUserMatchHistory(int matchType, int offset, int limit) {
+        String accessId = getAccessIdToSession(); // 유저 accessId 가져오기
         String url = "https://api.nexon.co.kr/fifaonline4/v1.0/users/" + accessId +"/matches?matchtype=" + matchType +"&offset="+ offset + "&limit=" + limit;
 
         // HTTP 요청을 위한 헤더 설정
@@ -138,13 +163,10 @@ public class FifaUserServiceImpl implements FifaUserService{
                 .replace("{offset}", String.valueOf(offset))
                 .replace("{limit}", String.valueOf(limit)));
 
-        log.info("------uri 정보-------");
-        log.info(String.valueOf(uri));
-
-        // HTTP (GET)요청 객체 생성
+        // HTTP 요청(GET) 객체 생성
         RequestEntity<Void> requestEntity = new RequestEntity<>(headers, HttpMethod.GET, uri);
 
-        // API 호출 및 결과 수신
+        // API 호출 및 결과 수신 (exchange = 요청에 대한 응답을 반환)
         String[] response = restTemplate.exchange(requestEntity, String[].class).getBody();
 
         // 결과 반환

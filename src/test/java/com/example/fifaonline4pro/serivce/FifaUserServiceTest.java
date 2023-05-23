@@ -36,7 +36,7 @@ public class FifaUserServiceTest {
             int limit = 10;
 
             // when
-            List<String> matches = fifaUserService.getUserMatchHistory(accessId, matchType, offset, limit);
+            List<String> matches = fifaUserService.getUserMatchHistory(matchType, offset, limit);
 
             // then
             for (String matchId : matches) {

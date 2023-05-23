@@ -14,10 +14,9 @@ import java.util.List;
 public interface FifaUserService {
     FifaUser findUserByNickname(String nickname); // 닉네임으로 유저 정보 조회
 
-    FifaUser findUserByAccessId(String accessId); // 유저 고유 식별자로 유저 정보 조회
+    FifaUser findUserByAccessId(); // 유저 고유 식별자로 유저 정보 조회
 
-    List<UserTearHistoryDTO> getUserTearHistoryList(String accessId); // 유저 경기별 역대 최고 등급 조회
+    List<UserTearHistoryDTO> getUserTearHistoryList(); // 유저 경기별 역대 최고 등급 조회
 
-    // 유저 매치 기록 조회
-    List<String> getUserMatchHistory(String accessId, int matchType, int offset, int limit);
+    List<String> getUserMatchHistory(int matchType, int offset, int limit); // 유저 매치 기록 조회
 }
