@@ -1,7 +1,7 @@
 package com.example.fifaonline4pro.service;
 
-import com.example.fifaonline4pro.dto.DivisionDTO;
-import com.example.fifaonline4pro.dto.MatchTypeDTO;
+import com.example.fifaonline4pro.dto.tear.DivisionDTO;
+import com.example.fifaonline4pro.dto.tear.MatchTypeDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;

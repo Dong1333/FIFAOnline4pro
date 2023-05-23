@@ -1,7 +1,7 @@
 package com.example.fifaonline4pro.service;
 
 import com.example.fifaonline4pro.domain.FifaUser;
-import com.example.fifaonline4pro.dto.UserTearHistoryDTO;
+import com.example.fifaonline4pro.dto.tear.UserTearHistoryDTO;
 
 
 import java.util.List;

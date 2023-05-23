@@ -1,4 +1,4 @@
-package com.example.fifaonline4pro.dto;
+package com.example.fifaonline4pro.dto.tear;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

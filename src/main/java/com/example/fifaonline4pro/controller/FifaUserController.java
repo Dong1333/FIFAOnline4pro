@@ -2,7 +2,7 @@ package com.example.fifaonline4pro.controller;
 
 import com.example.fifaonline4pro.domain.FifaUser;
 
-import com.example.fifaonline4pro.dto.UserTearHistoryDTO;
+import com.example.fifaonline4pro.dto.tear.UserTearHistoryDTO;
 import com.example.fifaonline4pro.service.FifaUserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
