@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ import java.util.List;
  * @since 2023/04/25
  */
 @RestController // 이 클래스가 REST 컨트롤러임을 표시
-@RequestMapping("/{users}")// 모든 메소드가 "/users"라는 엔드포인트에 매핑
+@RequestMapping("/user")// 모든 메소드가 "/users"라는 엔드포인트에 매핑
 @Log4j2
 @RequiredArgsConstructor // final 선언 필드 생성자 생성
 public class FifaUserController {
@@ -28,49 +29,45 @@ public class FifaUserController {
 
     // '닉네임'으로 '유저 정보' 조회 후 Model타입 반환
     @GetMapping("/{nickname}")
-    public ModelAndView getUserByNickname(@PathVariable("nickname") String nickname, Model model) {
-        FifaUser nickNameUser = fifaUserServiceImpl.findUserByNickname(nickname); // 닉네임으로 유저 정보 가져오기
-        String accessId = nickNameUser.getAccessId(); // 가져온 유저정보에서 accessId(고유 식별자)만 추출
+    public ModelAndView getUserByNickname(@PathVariable("nickname") String nickname, HttpServletRequest request, Model model) {
+        FifaUser userInfo = fifaUserServiceImpl.findUserByNickname(nickname); // 닉네임으로 유저 정보 가져오기
+        String accessId = userInfo.getAccessId(); // 가져온 유저정보에서 accessId(고유 식별자)만 추출
 
-        // getUserByAccessId 컨트롤러 메소드를 재요청하여 '유저 고유 식별자'로 얻을 수 있는 정보들을 모두 얻어온다.
-        FifaUser accessIdUser = getUserByAccessId(accessId);
+        fifaUserServiceImpl.setAccessIdToSession(request, accessId); // 세션에 accessId 저장
 
-        if (accessIdUser == null) { // '유저 고유 식별자'로 가져온  FifaUser 객체가 null일 경우(존재하지 않을 경우)
+        // '유저 고유 식별자'로 얻을 수 있는 정보들을 모두 얻어온다.
+        FifaUser userInfoByAccessId = fifaUserServiceImpl.findUserByAccessId();
+        // 유저의 경기별 티어 정보 가져오기. > 배열 데이터(공식, 감독)
+        List<UserTearHistoryDTO> userTearHistoryDTOList = fifaUserServiceImpl.getUserTearHistoryList();
+
+        if (userInfoByAccessId == null) { // '유저 고유 식별자'로 가져온  FifaUser 객체가 null일 경우(존재하지 않을 경우)
             return new ModelAndView("error"); // error.html View를 반환
         }
 
-        // 유저의 경기별 티어 정보 가져오기. > 배열 데이터(공식, 감독)
-        List<UserTearHistoryDTO> userTearHistoryDTOList = fifaUserServiceImpl.getUserTearHistoryList(accessId);
-
-        model.addAttribute("nickNameUser", nickNameUser); // Model 객체에 (닉네임으로 가져온) 유저 정보를 추가
-        model.addAttribute("accessIdUser", accessIdUser); // Model 객체에 (고유 식별자로 가져온) 유저 정보를 추가
-        model.addAttribute("userMatchHistory", userTearHistoryDTOList); // Model 객체에 유저 티어 기록 배열 데이터 추가
+        model.addAttribute("userInfoByAccessId", userInfoByAccessId); // Model 객체에 (고유 식별자로 가져온) 유저 정보를 추가
+        model.addAttribute("userTearHistoryDTOList", userTearHistoryDTOList); // Model 객체에 유저 티어 기록 배열 데이터 추가
         return new ModelAndView("userinfo"); // userinfo.html View를 반환
     }
 
-    // '유저 고유 식별자'로 요청하는 메소드
-    @GetMapping("/userinfo={accessId}")
-    public FifaUser getUserByAccessId(@PathVariable("accessId") String accessId) {
-        // FifaUserRepository의 findUserByAccessId 메소드를 호출하여 FifaUser 객체를 가져온다.
-        FifaUser accessIdUser = fifaUserServiceImpl.findUserByAccessId(accessId);
+    // 유저의 매치 기록 조회(기본 값 공식경기 matchType 50)
+    @GetMapping("/getUserMatchHistory")
+    public ModelAndView getUserMatchHistory(Model model,
+                                      @RequestParam(value = "matchType", defaultValue = "50") int matchType,
+                                      @RequestParam(value = "offset", defaultValue = "0") int offset,
+                                      @RequestParam(value = "limit", defaultValue = "100") int limit) {
 
-        if (accessIdUser == null) { // '유저 고유 식별자'로 가져온 FifaUser 객체가 null일 경우(존재하지 않을 경우)
-            return null; // null 반환
-        }
-        return accessIdUser; // '유저 고유 식별자'로 가져온 FifaUser 객체 반환
-    }
+        log.info("------(matchType)----------");
+        log.info(matchType);
+        // 유저의 공식 경기 기록을 가져오는 로직
+        List<String> matchHistory = fifaUserServiceImpl.getUserMatchHistory(matchType, offset, limit);
 
-    // '유저 고유 식별자'로 요청하는 메소드
-    @GetMapping("/userinfo={accessssId}")
-    public FifaUser getUserByAccessIdd(@PathVariable("accessId") String accessId, ) {
-        // FifaUserRepository의 findUserByAccessId 메소드를 호출하여 FifaUser 객체를 가져온다.
-        FifaUser accessIdUser = fifaUserServiceImpl.getUserMatchHistory(accessId);
+        log.info("------(matchHistory)----------");
+        log.info(matchHistory);
 
+        // 모델에 공식 경기 기록을 추가
+        model.addAttribute("userMatchHistory", matchHistory);
 
-        if (accessIdUser == null) { // '유저 고유 식별자'로 가져온 FifaUser 객체가 null일 경우(존재하지 않을 경우)
-            return null; // null 반환
-        }
-        return accessIdUser; // '유저 고유 식별자'로 가져온 FifaUser 객체 반환
+        return new ModelAndView("matchHistory"); // 공식 경기 기록 페이지로 이동
     }
 
 
