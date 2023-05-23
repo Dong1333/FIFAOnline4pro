@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>유저정보</title>
+</head>
+<body>
+<form action="/user/getUserMatchHistory" method="get">
+  <label for="matchType">Match Type:</label>
+  <select id="matchType" name="matchType">
+    <option value="50">공식경기</option>
+    <option value="52">감독모드</option>
+    <!-- 다른 매치 타입 옵션들 추가 -->
+  </select>
+  <br>
+  <input type="number" id="offset" name="offset" value="0">
+  <label for="offset"> 번째 부터</label>
+  <br>
+  <input type="number" id="limit" name="limit" value="50">
+  <label for="limit"> 번째 까지</label>
+  <br>
+  <button type="submit">매치기록조회</button>
+</form>
+<table>
+  <thead>
+  <tr>
+    <th>Match Type</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="match : ${userMatchHistory}">
+    <td th:text="${match}"></td>
+  </tr>
+  </tbody>
+</table>
+
+</body>
+</html>
