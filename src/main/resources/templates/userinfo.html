@@ -17,6 +17,13 @@
 </div>
 </tbody>
 
+<!-- 공식경기 버튼과 입력 폼 -->
+<form th:action="@{/user/getUserMatchHistory}" method="get">
+  <input type="hidden" name="matchType" value="50"> <!-- 기본값 설정 -->
+  <input type="hidden" name="offset" value="0"> <!-- 기본값 설정 -->
+  <input type="hidden" name="limit" value="100"> <!-- 기본값 설정 -->
+  <button type="submit">공식경기</button>
+</form>
 
 </body>
 </html>
