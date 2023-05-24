@@ -3,6 +3,7 @@ package com.example.fifaonline4pro.dto.match;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @version 1.0
@@ -17,6 +18,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 public class DefenceDTO {
     private Integer blockTry;           // 블락 시도 수

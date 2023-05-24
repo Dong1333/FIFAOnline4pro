@@ -3,6 +3,7 @@ package com.example.fifaonline4pro.dto.match;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @version 1.0
@@ -18,6 +19,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 public class PlayerDTO {
     private Integer spId;               // 선수 고유 식별자 (/metadata/spid API 참고)

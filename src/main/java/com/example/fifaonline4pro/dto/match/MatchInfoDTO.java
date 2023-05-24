@@ -3,6 +3,7 @@ package com.example.fifaonline4pro.dto.match;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ import java.util.List;
  */
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 public class MatchInfoDTO {
     private String accessId;            // 유저 고유 식별자
