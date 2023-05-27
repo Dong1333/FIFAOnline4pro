@@ -2,6 +2,7 @@ package com.example.fifaonline4pro.service;
 
 import com.example.fifaonline4pro.config.ApiKey;
 import com.example.fifaonline4pro.domain.FifaUser;
+import com.example.fifaonline4pro.dto.match.MatchDTO;
 import com.example.fifaonline4pro.dto.tear.DivisionDTO;
 import com.example.fifaonline4pro.dto.tear.MatchTypeDTO;
 
@@ -95,7 +96,7 @@ public class FifaUserServiceImpl implements FifaUserService{
     }
 
     // 유저 경기별 역대 최고 등급 조회
-    public List<UserTearHistoryDTO> getUserTearHistoryList() {
+    public List<UserTearHistoryDTO> findUserTearHistoryList() {
         String accessId = getAccessIdToSession(); // 유저 accessId 가져오기
 
         log.info("-------accessId---------");
@@ -148,10 +149,13 @@ public class FifaUserServiceImpl implements FifaUserService{
         return userTearHistoryDTOList;
     }
 
-    // 유저 매치 기록 조회
-    public List<String> getUserMatchHistory(int matchType, int offset, int limit) {
+    // 유저 매치 기록중 매칭 ID만 가져오기
+    public List<String> findUserMatchHistory(int matchType, int offset, int limit) {
         String accessId = getAccessIdToSession(); // 유저 accessId 가져오기
-        String url = "https://api.nexon.co.kr/fifaonline4/v1.0/users/" + accessId +"/matches?matchtype=" + matchType +"&offset="+ offset + "&limit=" + limit;
+
+        log.info("------(findUserMatchHistory accessId)-----");
+        log.info(accessId);
+        String url = "https://api.nexon.co.kr/fifaonline4/v1.0/users/" + accessId + "/matches?matchtype=" + matchType + "&offset=" + offset + "&limit=" + limit;
 
         // HTTP 요청을 위한 헤더 설정
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -167,10 +171,27 @@ public class FifaUserServiceImpl implements FifaUserService{
         RequestEntity<Void> requestEntity = new RequestEntity<>(headers, HttpMethod.GET, uri);
 
         // API 호출 및 결과 수신 (exchange = 요청에 대한 응답을 반환)
-        String[] response = restTemplate.exchange(requestEntity, String[].class).getBody();
+        ResponseEntity<String[]> responseEntity = restTemplate.exchange(requestEntity, String[].class);
+        String[] response = responseEntity.getBody();
 
         // 결과 반환
         return Arrays.asList(response);
+    }
+
+    // 유저 매칭 ID로 매칭 상세정보 가져오기
+    public MatchDTO findMatchInfo(String matchId) {
+        String url = "https://api.nexon.co.kr/fifaonline4/v1.0/matches/" + matchId;
+
+        // HTTP 요청을 위한 헤더 설정
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.set("Authorization", apiKey.getKey());
+
+        // HTTP 요청(GET) 객체 생성
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+        // API 호출 및 결과 수신
+        ResponseEntity<MatchDTO> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, MatchDTO.class);
+        return responseEntity.getBody();
     }
 
 }
