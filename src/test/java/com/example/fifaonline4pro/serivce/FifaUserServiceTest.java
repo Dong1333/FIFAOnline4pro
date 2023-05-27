@@ -56,7 +56,7 @@ public class FifaUserServiceTest {
         }
 
         @Test
-        @DisplayName("유저의 매칭 아이디로 경기상세기록 조회")
+        @DisplayName("유저의 매칭 아이디로 경기 상세기록 조회")
         public void testGetMatchInfo() throws JsonProcessingException {
             // given
             String matchId = "646c9362f49851157eb8a9a1";
