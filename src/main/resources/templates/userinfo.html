@@ -8,7 +8,7 @@
 <p th:text="${userInfoByAccessId.nickname} + ' 구단주님'"></p>
 <p th:text="'레벨 : ' + ${userInfoByAccessId.level}"></p>
 
-<p th:text="'accessId : ' + ${userInfoByAccessId.accessId}"></p>
+<!--<p th:text="'accessId : ' + ${userInfoByAccessId.accessId}"></p>-->
 
 <tbody>
 <div th:each="match : ${userTearHistoryDTOList}">
@@ -21,7 +21,7 @@
 <form th:action="@{/user/getUserMatchHistory}" method="get">
   <input type="hidden" name="matchType" value="50"> <!-- 기본값 설정 -->
   <input type="hidden" name="offset" value="0"> <!-- 기본값 설정 -->
-  <input type="hidden" name="limit" value="100"> <!-- 기본값 설정 -->
+  <input type="hidden" name="limit" value="10"> <!-- 기본값 설정 -->
   <button type="submit">공식경기</button>
 </form>
 
