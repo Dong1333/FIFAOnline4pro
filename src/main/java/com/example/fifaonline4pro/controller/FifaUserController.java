@@ -87,8 +87,6 @@ public class FifaUserController {
             MatchDTO matchDTO = fifaUserServiceImpl.findMatchInfo(matchId);
             matchDTOs.add(matchDTO);
         }
-        log.info("--------(matchDTOs)------");
-        log.info(matchDTOs);
 
         // MatchDTO 객체를 JSON으로 변환하여 HTTP 응답
         return ResponseEntity.ok(matchDTOs);
