@@ -19,15 +19,15 @@ public interface FifaUserService {
 
     FifaUser findUserByAccessId(); // 유저 고유 식별자로 유저 정보 조회
 
-    void setAccessIdToSession(HttpServletRequest request, String accessId);
+    void setAccessIdToSession(HttpServletRequest request, String accessId); // (유저 고유 식별자)세션 저장
 
-    String getAccessIdToSession();
+    String getAccessIdToSession(); // (유저 고유 식별자)세션 부러오기
 
     List<UserTearHistoryDTO> findUserTearHistoryList(); // 유저 경기별 역대 최고 등급 조회
 
-    MatchDTO findMatchInfo(String matchId);
+    MatchDTO findMatchInfo(String matchId); // 유저 매치 상세 기록 조회
 
-    List<String> findUserMatchHistory(int matchType, int offset, int limit); // 유저 매치 기록 조회
+    List<String> findUserMatchHistory(int matchType, int offset, int limit); // 유저 매치 ID 조회
 
 
 }
