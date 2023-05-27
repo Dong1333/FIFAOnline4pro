@@ -44,3 +44,6 @@ src/main/resources/application.properties
 
 # Except for this specific file
 !/static/specific-file.js
+
+# 스프링 부트 리소스 디렉토리 내의 스태틱 파일들을 무시합니다
+/src/main/resources/static/
