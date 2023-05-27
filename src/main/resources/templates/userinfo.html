@@ -5,18 +5,25 @@
 </head>
 <body>
 <h1>유저정보</h1>
-<p th:text="${nickNameUser.nickname} + ' 구단주님'"></p>
-<p th:text="'레벨 : ' + ${nickNameUser.level}"></p>
+<p th:text="${userInfoByAccessId.nickname} + ' 구단주님'"></p>
+<p th:text="'레벨 : ' + ${userInfoByAccessId.level}"></p>
 
-<p th:text="'accessId : ' + ${accessIdUser.accessId}"></p>
+<!--<p th:text="'accessId : ' + ${userInfoByAccessId.accessId}"></p>-->
 
 <tbody>
-<div th:each="match : ${userMatchHistory}">
+<div th:each="match : ${userTearHistoryDTOList}">
   <p th:text="${match.getMatchType()} + ' 최고 티어 :' + ${match.getDivision()}"></p>
   <!-- 나머지 필드들도 출력 가능 -->
 </div>
 </tbody>
 
+<!-- 공식경기 버튼과 입력 폼 -->
+<form th:action="@{/user/getUserMatchHistory}" method="get">
+  <input type="hidden" name="matchType" value="50"> <!-- 기본값 설정 -->
+  <input type="hidden" name="offset" value="0"> <!-- 기본값 설정 -->
+  <input type="hidden" name="limit" value="10"> <!-- 기본값 설정 -->
+  <button type="submit">공식경기</button>
+</form>
 
 </body>
 </html>

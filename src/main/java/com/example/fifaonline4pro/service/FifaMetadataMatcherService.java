@@ -1,7 +1,7 @@
 package com.example.fifaonline4pro.service;
 
-import com.example.fifaonline4pro.dto.DivisionDTO;
-import com.example.fifaonline4pro.dto.MatchTypeDTO;
+import com.example.fifaonline4pro.dto.tear.DivisionDTO;
+import com.example.fifaonline4pro.dto.tear.MatchTypeDTO;
 
 import java.util.List;
 

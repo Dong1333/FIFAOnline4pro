@@ -38,3 +38,9 @@ out/
 
 ### application.properties
 src/main/resources/application.properties
+
+# Ignore everything in the "static" folder
+/static/*
+
+# Except for this specific file
+!/static/specific-file.js
