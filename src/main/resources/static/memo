@@ -1,0 +1,20 @@
+    // 유저의 매치 기록 조회(기본 값 공식경기 matchType 50)
+    @GetMapping("/getUserMatchHistory")
+    public ModelAndView getUserMatchHistory(Model model,
+                                      @RequestParam(value = "matchType", defaultValue = "50") int matchType,
+                                      @RequestParam(value = "offset", defaultValue = "0") int offset,
+                                      @RequestParam(value = "limit", defaultValue = "100") int limit) {
+
+        log.info("------(matchType)----------");
+        log.info(matchType);
+        // 유저의 공식 경기 기록을 가져오는 로직
+        List<String> matchHistory = fifaUserServiceImpl.getUserMatchHistory(matchType, offset, limit);
+
+        log.info("------(matchHistory)----------");
+        log.info(matchHistory);
+
+        // 모델에 공식 경기 기록을 추가
+        model.addAttribute("userMatchHistory", matchHistory);
+
+        return new ModelAndView("matchHistory"); // 공식 경기 기록 페이지로 이동
+    }
