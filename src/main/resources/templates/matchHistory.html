@@ -6,6 +6,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!--    더보기 버튼 시 '비동기' 처리하는 js-->
     <script src="/js/loadMatches.js"></script>
+    <link rel="stylesheet" href="/css/matchHistory.css">
 </head>
 <body>
 <h1>공식경기 기록</h1>
@@ -24,11 +25,10 @@
     <tbody>
     <tr th:each="match : ${matches}">
         <td>
-            <!--날짜 표현을 한국 시간에 맞게 변경 -->
             <script th:inline="javascript">
                 var formattedDate = new Date(/*[[${match.matchDate}]]*/).toLocaleString('ko-KR', {
                     year: 'numeric',
-                    month: '2-digit', // 2글자
+                    month: '2-digit',
                     day: '2-digit',
                     hour: 'numeric',
                     minute: 'numeric'
@@ -38,9 +38,8 @@
         </td>
         <td>
             <span th:style="${match.matchInfo[0].matchDetail.matchResult == '승' ? 'color: blue' : (match.matchInfo[0].matchDetail.matchResult == '무' ? 'color: black' : 'color: red')}"
-            th:text="${match.matchInfo[0].matchDetail.matchResult}"></span>
+                  th:text="${match.matchInfo[0].matchDetail.matchResult}"></span>
         </td>
-
         <td th:text="${match.matchInfo[0].nickname}"></td>
         <td th:text="${match.matchInfo[0].shoot.goalTotal}"></td>
         <td th:text="${match.matchInfo[1].nickname}"></td>
@@ -53,7 +52,16 @@
     </tr>
     </tbody>
 </table>
-
 <button id="loadMoreButton">더보기</button>
+
+<script>
+    $(document).ready(function () {
+        // "더보기" 버튼 클릭 시 이벤트 처리
+        $('#loadMoreButton').click(function () {
+            // 추가적인 처리를 위한 코드 작성
+            // ...
+        });
+    });
+</script>
 </body>
 </html>

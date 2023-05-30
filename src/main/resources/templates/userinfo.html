@@ -1,29 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"> <!-- Thymeleaf 네임스페이스를 선언 -->
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8">
   <title>유저정보</title>
+  <link rel="stylesheet" href="/css/userinfo.css">
 </head>
 <body>
-<h1>유저정보</h1>
-<p th:text="${userInfoByAccessId.nickname} + ' 구단주님'"></p>
-<p th:text="'레벨 : ' + ${userInfoByAccessId.level}"></p>
-
-<!--<p th:text="'accessId : ' + ${userInfoByAccessId.accessId}"></p>-->
-
-<tbody>
-<div th:each="match : ${userTearHistoryDTOList}">
-  <p th:text="${match.getMatchType()} + ' 최고 티어 :' + ${match.getDivision()}"></p>
-  <!-- 나머지 필드들도 출력 가능 -->
+<div class="container">
+  <h1 class="title"><p class="nickname" th:text="${userInfoByAccessId.nickname} + ' 구단주님'"></p></h1>
+  <div class="user-info">
+    <div class="info-box">
+      <p class="level" th:text="'레벨 : ' + ${userInfoByAccessId.level}"></p>
+      <div class="match-history" th:each="match : ${userTearHistoryDTOList}">
+        <p th:text="${match.getMatchType()} + ' 최고 티어 :' + ${match.getDivision()}"></p>
+        <!-- 나머지 필드들도 출력 가능 -->
+      </div>
+    </div>
+  </div>
+  <form class="match-form" th:action="@{/user/getUserMatchHistory}" method="get">
+    <input type="hidden" name="matchType" value="50"> <!-- 기본값 설정 -->
+    <input type="hidden" name="offset" value="0"> <!-- 기본값 설정 -->
+    <input type="hidden" name="limit" value="10"> <!-- 기본값 설정 -->
+    <button type="submit">공식경기</button>
+  </form>
 </div>
-</tbody>
-
-<!-- 공식경기 버튼과 입력 폼 -->
-<form th:action="@{/user/getUserMatchHistory}" method="get">
-  <input type="hidden" name="matchType" value="50"> <!-- 기본값 설정 -->
-  <input type="hidden" name="offset" value="0"> <!-- 기본값 설정 -->
-  <input type="hidden" name="limit" value="10"> <!-- 기본값 설정 -->
-  <button type="submit">공식경기</button>
-</form>
-
 </body>
 </html>
