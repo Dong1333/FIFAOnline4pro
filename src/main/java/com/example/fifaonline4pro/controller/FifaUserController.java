@@ -92,6 +92,8 @@ public class FifaUserController {
         return ResponseEntity.ok(matchDTOs);
     }
 
+
+
     //   Ajax 방식 '닉네임'으로 '유저 정보' 조회 후 JSON 형태 반환
     //     HTTP GET방식에 "/users/{nickname}" 요청
     //    @GetMapping("/{nickname}")

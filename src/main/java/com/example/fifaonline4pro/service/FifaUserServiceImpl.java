@@ -57,7 +57,7 @@ public class FifaUserServiceImpl implements FifaUserService{
     }
 
 
-    // 유저 정보 조회 메소드 findUserByNickname
+    // nickname '유저 정보' 조회 메소드
     // nickname으로 넥슨 open API에서 유저 정보를 가져온 후, FifaUser 객체로 변환 후 반환
     public FifaUser findUserByNickname(String nickname) {
         // 넥슨에 요청할 url (open API URL + 작성한 유저이름)
@@ -74,7 +74,7 @@ public class FifaUserServiceImpl implements FifaUserService{
         return responseEntity.getBody(); // 최종적으로 반환된 FifaUser 객체의 Body 값을 반환
     }
 
-    // 유저 정보 조회 메소드 findUserByAccessId
+    // accessId으로 '유저 정보' 조회 메소드 findUserByAccessId
     // accessId으로 넥슨 open API에서 유저 정보를 가져온 후, FifaUser 객체로 변환 후 반환
     public FifaUser findUserByAccessId() {
         String accessId = getAccessIdToSession(); // 유저 accessId 가져오기
@@ -95,7 +95,7 @@ public class FifaUserServiceImpl implements FifaUserService{
         return responseEntity.getBody(); // 최종적으로 반환된 FifaUser 객체의 Body 값을 반환
     }
 
-    // 유저 경기별 역대 최고 등급 조회
+    // 유저 '경기별 역대 최고 등급' 조회
     public List<UserTearHistoryDTO> findUserTearHistoryList() {
         String accessId = getAccessIdToSession(); // 유저 accessId 가져오기
 
@@ -149,7 +149,7 @@ public class FifaUserServiceImpl implements FifaUserService{
         return userTearHistoryDTOList;
     }
 
-    // 유저 매치 기록중 매칭 ID만 가져오기
+    // 유저 매치 기록중 '매칭 ID' 가져오기
     public List<String> findUserMatchHistory(int matchType, int offset, int limit) {
         String accessId = getAccessIdToSession(); // 유저 accessId 가져오기
 
@@ -178,7 +178,7 @@ public class FifaUserServiceImpl implements FifaUserService{
         return Arrays.asList(response);
     }
 
-    // 유저 매칭 ID로 매칭 상세정보 가져오기
+    // 유저 매칭 ID로 '매칭 상세 정보' 가져오기
     public MatchDTO findMatchInfo(String matchId) {
         String url = "https://api.nexon.co.kr/fifaonline4/v1.0/matches/" + matchId;
 
@@ -193,5 +193,7 @@ public class FifaUserServiceImpl implements FifaUserService{
         ResponseEntity<MatchDTO> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, MatchDTO.class);
         return responseEntity.getBody();
     }
+
+
 
 }

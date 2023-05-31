@@ -17,7 +17,7 @@ import java.util.List;
 public interface FifaUserService {
     FifaUser findUserByNickname(String nickname); // 닉네임으로 유저 정보 조회
 
-    FifaUser findUserByAccessId(); // 유저 고유 식별자로 유저 정보 조회
+    public FifaUser findUserByAccessId(); // 유저 고유 식별자로 유저 정보 조회
 
     void setAccessIdToSession(HttpServletRequest request, String accessId); // (유저 고유 식별자)세션 저장
 
