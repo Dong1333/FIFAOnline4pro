@@ -1,4 +1,4 @@
-package com.example.fifaonline4pro.service;
+package com.example.fifaonline4pro.service.meta;
 
 import com.example.fifaonline4pro.dto.tear.DivisionDTO;
 import com.example.fifaonline4pro.dto.tear.MatchTypeDTO;

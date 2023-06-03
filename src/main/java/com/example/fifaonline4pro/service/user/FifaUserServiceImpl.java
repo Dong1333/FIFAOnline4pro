@@ -1,12 +1,14 @@
-package com.example.fifaonline4pro.service;
+package com.example.fifaonline4pro.service.user;
 
 import com.example.fifaonline4pro.config.ApiKey;
 import com.example.fifaonline4pro.domain.FifaUser;
-import com.example.fifaonline4pro.dto.match.MatchDTO;
 import com.example.fifaonline4pro.dto.tear.DivisionDTO;
 import com.example.fifaonline4pro.dto.tear.MatchTypeDTO;
 
 import com.example.fifaonline4pro.dto.tear.UserTearHistoryDTO;
+import com.example.fifaonline4pro.dto.trade.TradeDTO;
+import com.example.fifaonline4pro.service.meta.FifaMetadataMatcherService;
+import com.example.fifaonline4pro.service.meta.FifaMetadataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
@@ -38,7 +40,7 @@ public class FifaUserServiceImpl implements FifaUserService{
     private final ApiKey apiKey; // API key 스프링 빈 주입
     private final RestTemplate restTemplate; //  HTTP 통신을 간편하게 처리하기 위한 객체 생성
     private final FifaMetadataMatcherService fifaMetadataMatcherService;
-    private final FifaMetadataService  fifaMetadataService;
+    private final FifaMetadataService fifaMetadataService;
     private final HttpServletRequest request; // accessId가 저장되는 requset 멤버 변수(재할당 불가)
 
     HttpHeaders headers = new HttpHeaders(); // (재사용)HTTP 요청의 헤더 정보를 담아서 보낼 수 있는 객체 생성
@@ -178,22 +180,32 @@ public class FifaUserServiceImpl implements FifaUserService{
         return Arrays.asList(response);
     }
 
-    // 유저 매칭 ID로 '매칭 상세 정보' 가져오기
-    public MatchDTO findMatchInfo(String matchId) {
-        String url = "https://api.nexon.co.kr/fifaonline4/v1.0/matches/" + matchId;
+    @Override
+    public List<TradeDTO> findTradeHistory(String tradetype, int offset, int limit) {
+        String accessId = getAccessIdToSession();
+
+        String url = "https://api.nexon.co.kr/fifaonline4/v1.0/users/" + accessId + "/markets?tradetype=" + tradetype + "&offset=" + offset + "&limit=" + limit;
+
 
         // HTTP 요청을 위한 헤더 설정
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         headers.set("Authorization", apiKey.getKey());
 
+        // 요청 URI 객체 생성 (요청 url + 값 지정하기)
+        URI uri = URI.create(url.replace("{accessid}", accessId)
+                .replace("{tradetype}", String.valueOf(tradetype))
+                .replace("{offset}", String.valueOf(offset))
+                .replace("{limit}", String.valueOf(limit)));
+
         // HTTP 요청(GET) 객체 생성
-        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+        RequestEntity<Void> requestEntity = new RequestEntity<>(headers, HttpMethod.GET, uri);
 
-        // API 호출 및 결과 수신
-        ResponseEntity<MatchDTO> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, MatchDTO.class);
-        return responseEntity.getBody();
+        // API 호출 및 결과 수신 (exchange = 요청에 대한 응답을 반환)
+        ResponseEntity<TradeDTO[]> responseEntity = restTemplate.exchange(requestEntity, TradeDTO[].class);
+        TradeDTO[] response = responseEntity.getBody();
+
+        // 결과 반환
+        return Arrays.asList(response);
     }
-
-
 
 }

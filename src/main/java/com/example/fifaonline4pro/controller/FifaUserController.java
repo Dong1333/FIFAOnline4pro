@@ -4,7 +4,8 @@ import com.example.fifaonline4pro.domain.FifaUser;
 
 import com.example.fifaonline4pro.dto.match.MatchDTO;
 import com.example.fifaonline4pro.dto.tear.UserTearHistoryDTO;
-import com.example.fifaonline4pro.service.FifaUserServiceImpl;
+import com.example.fifaonline4pro.service.match.FifaMatchService;
+import com.example.fifaonline4pro.service.user.FifaUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -28,20 +29,21 @@ import java.util.List;
 public class FifaUserController {
 
     // FifaUserRepository 타입의 인스턴스 변수 선언
-    private final FifaUserServiceImpl fifaUserServiceImpl;
+    private final FifaUserService fifaUserService;
+    private final FifaMatchService fifaMatchService;
 
     // '닉네임'으로 '유저 정보' 조회 후 Model타입 반환
     @GetMapping("/{nickname}")
     public ModelAndView getUserByNickname(@PathVariable("nickname") String nickname, HttpServletRequest request, Model model) {
-        FifaUser userInfo = fifaUserServiceImpl.findUserByNickname(nickname); // 닉네임으로 유저 정보 가져오기
+        FifaUser userInfo = fifaUserService.findUserByNickname(nickname); // 닉네임으로 유저 정보 가져오기
         String accessId = userInfo.getAccessId(); // 가져온 유저정보에서 accessId(고유 식별자)만 추출
 
-        fifaUserServiceImpl.setAccessIdToSession(request, accessId); // 세션에 accessId 저장
+        fifaUserService.setAccessIdToSession(request, accessId); // 세션에 accessId 저장
 
         // '유저 고유 식별자'로 얻을 수 있는 정보들을 모두 얻어온다.
-        FifaUser userInfoByAccessId = fifaUserServiceImpl.findUserByAccessId();
+        FifaUser userInfoByAccessId = fifaUserService.findUserByAccessId();
         // 유저의 경기별 티어 정보 가져오기. > 배열 데이터(공식, 감독)
-        List<UserTearHistoryDTO> userTearHistoryDTOList = fifaUserServiceImpl.findUserTearHistoryList();
+        List<UserTearHistoryDTO> userTearHistoryDTOList = fifaUserService.findUserTearHistoryList();
 
         if (userInfoByAccessId == null) { // '유저 고유 식별자'로 가져온  FifaUser 객체가 null일 경우(존재하지 않을 경우)
             return new ModelAndView("error"); // error.html View를 반환
@@ -61,10 +63,10 @@ public class FifaUserController {
         // 매칭 상세기록들을 담을 MatchDTO 리스트 선언
         List<MatchDTO> matchDTOs = new ArrayList<>();
         // 매칭 ID 조회(경기 타입, 시작, 끝)
-        List<String> matchIds = fifaUserServiceImpl.findUserMatchHistory(matchType, offset, limit);
+        List<String> matchIds = fifaUserService.findUserMatchHistory(matchType, offset, limit);
         // 조회한 매칭 ID별 상세기록 값 matchDTOs에 저장
         for (String matchId : matchIds) {
-            MatchDTO matchDTO = fifaUserServiceImpl.findMatchInfo(matchId);
+            MatchDTO matchDTO = fifaMatchService.findMatchInfo(matchId);
             matchDTOs.add(matchDTO);
         }
         model.addAttribute("matches", matchDTOs);
@@ -81,10 +83,10 @@ public class FifaUserController {
         // 매칭 상세기록들을 담을 MatchDTO 리스트 선언
         List<MatchDTO> matchDTOs = new ArrayList<>();
         // 매칭 ID 조회(경기 타입, 시작, 끝)
-        List<String> matchIds = fifaUserServiceImpl.findUserMatchHistory(matchType, offset, limit);
+        List<String> matchIds = fifaUserService.findUserMatchHistory(matchType, offset, limit);
         // 조회한 매칭 ID별 상세기록 값 matchDTOs에 저장
         for (String matchId : matchIds) {
-            MatchDTO matchDTO = fifaUserServiceImpl.findMatchInfo(matchId);
+            MatchDTO matchDTO = fifaMatchService.findMatchInfo(matchId);
             matchDTOs.add(matchDTO);
         }
 
